@@ -1,22 +1,30 @@
 {
+  "private": true,
   "dependencies": {
+    "body-parser": "^1.19.2",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "mongoose": "^6.2.8"
   },
   "name": "portfolio",
   "version": "0.0.1",
   "description": "rei-rala's portfolio backend",
-  "main": "server.ts",
+  "main": "./src/server.ts",
   "scripts": {
-    "start": "ts-node server.ts",
-    "test": "test"
+    "start": "ts-node",
+    "dev": "nodemon",
+    "build": "tsc",
+    "production": "npm run build && ts-node ./dist/server.js"
   },
   "author": "rei-rala",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
+    "nodemon": "^2.0.15",
     "typescript": "^4.6.3"
   }
 }
