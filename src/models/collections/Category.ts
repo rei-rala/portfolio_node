@@ -1,6 +1,8 @@
-import { Schema, model } from 'mongoose'
+import { mongoose } from '../../vendor'
+
 import { CatContentSchema } from './CatContent'
 
+const { Schema, model } = mongoose
 const categoryCollection = 'category'
 
 const CategorySchema = new Schema({

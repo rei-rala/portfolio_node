@@ -7,37 +7,32 @@ import {
 } from './vendor'
 
 import { connectToDB, closeConnectionToDB } from './models/MongooseHandler'
-import { createCategory, deleteCategory, getCategories, getCategoryByName, updateCategory } from './controllers/category.controller'
+import { categoryRouter, createCategory, deleteCategory, getCategories, getCategoryByName, updateCategory } from './controllers/category.controller'
 import { errBadRequest, errNotFound, errServer } from './middleware/errors'
-
 
 dotenv.config()
 
-const enviroment = process.env.NODE_ENV || 'development'
-const mongo_url = enviroment === 'development' ? process.env.MONGO_URL_DEV : process.env.MONGO_URL_PROD
-
-const app = express()
-const PORT = process.env.PORT || 5000
-
-app.listen(PORT, async () => {
-    connectToDB('mongodb://localhost:27017/portfolio')
-        .then(() => console.log(`Server running on port ${PORT}`))
-        .catch(err => console.log(`Error connecting to DB: ${err.message}`))
-})
-app.use(cors())
-app.get('/', (_, res) => res.send('Hello World!'))
+const mongo_url = (process.env.NODE_ENV === 'production' ? process.env.MONGO_URL_PROD : process.env.MONGO_URL_DEV) ?? ''
+const PORT = process.env.PORT || 8080
 
 process.on("uncaughtException", console.error)
 process.on('beforeExit', closeConnectionToDB)
 
+const app = express()
 const apiRouter = express.Router()
-const categoryRouter = express.Router()
 
-app.use('/api', apiRouter)
+app.listen(PORT, async () => {
+    connectToDB(mongo_url!)
+        .then(() => console.log(`Server running on port ${PORT}`))
+        .catch(err => console.log(`Error connecting to DB: ${err.message}`))
+})
+
+app.get('/', (_, res) => res.send('Hello World!'))
+app.use(cors())
 app.use(cookieParser())
+app.use('/api', apiRouter)
 apiRouter.use(bodyParser.json())
 apiRouter.use('/category', categoryRouter)
-
 
 // Categorias
 apiRouter.get('/categories/', getCategories)

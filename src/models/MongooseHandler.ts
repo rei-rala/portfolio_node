@@ -1,4 +1,5 @@
-import mongoose, { Model } from 'mongoose'
+import { mongoose } from '../vendor'
+const { Model } = mongoose
 
 type MongooseResponse = Promise<{ data: any, error: null } | { data: null, error: any }>
 
@@ -35,11 +36,11 @@ class MongooseHandler {
         }
     }
 
-    put: (query: { [key: string]: string | number }, properties: { [key: string]: string | number }) => MongooseResponse = async (query, properties) => {
+    put: (filter: { [key: string]: string | number }, properties: { [key: string]: string | number }) => MongooseResponse = async (filter, properties) => {
         try {
-            if (!query) { throw 'Ingrese query' }
+            if (!filter) { throw 'Ingrese propiedades de busqueda' }
             if (!properties) { throw 'Ingrese propiedad/es para actualizar' }
-            const updated = await this.model.findOneAndUpdate({ query }, { ...properties }, { new: true }).exec()
+            const updated = await this.model.findOneAndUpdate({ filter }, { ...properties }, { new: true }).exec()
 
             if (updated && updated.acknowledged !== false) {
                 return { data: updated, error: null }

@@ -1,6 +1,7 @@
-import { Schema, model } from 'mongoose'
+import { mongoose } from '../../vendor'
 
 const catContentCollection = 'catContent'
+const { Schema, model } = mongoose
 
 const CatContentSchema = new Schema({
     title: { type: String, required: true },

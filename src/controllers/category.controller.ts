@@ -1,8 +1,9 @@
-import { RequestHandler } from "express"
+import { RequestHandler, Router } from "express"
 import MongooseHandler from "../models/MongooseHandler";
 import Category from '../models/collections/Category'
 
 const Category_DB = new MongooseHandler(Category, 'category')
+const categoryRouter = Router()
 
 const getCategories: RequestHandler = async (_, res, next) => {
     try {
@@ -32,17 +33,17 @@ const getCategoryByName: RequestHandler = async (req, res, next) => {
         const { name } = req.params
 
         if (!name) {
-            return next({ code: 400, message: 'No se ingreso nombre de categoria' })
+            throw { code: 400, message: 'No se ingreso nombre de categoria' }
         }
 
         const { data, error } = await Category_DB.get({ name })
 
         if (error) {
-            return next({ code: 400, message: error.message })
+            throw { code: 400, message: error.message }
         }
 
         if (!data) {
-            return next({ code: 404, message: `Categoria  '${name}' no encontrada` })
+            throw { code: 404, message: `Categoria  '${name}' no encontrada` }
         }
 
         res.send({
@@ -91,7 +92,7 @@ const updateCategory: RequestHandler = async (req, res, next) => {
         const { properties } = req.body
 
         if (!name || !properties) {
-            return next({ code: 400, message: 'No se ingresaron suficientes datos' })
+            throw { code: 400, message: 'No se ingresaron suficientes datos' }
         }
 
         const { data, error } = await Category_DB.put({ name }, { ...properties })
@@ -144,4 +145,4 @@ const deleteCategory: RequestHandler = async (req, res, next) => {
     }
 }
 
-export { getCategories, getCategoryByName, createCategory, updateCategory, deleteCategory }
+export { categoryRouter, getCategories, getCategoryByName, createCategory, updateCategory, deleteCategory }
